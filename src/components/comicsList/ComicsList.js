@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import {Link} from 'react-router-dom';
 
 import Spinner from '../spinner/Spinner'
 import ErrorMessage from '../errorMessage/ErrorMessage';
@@ -13,9 +14,9 @@ const ComicsList = () => {
     const {loading, error, getAllComics} = useMarvelService();
 
     const [ComicsList, setComicsList] = useState([]);
-    const [newItemLoading, setNewItemLoading] = useState(false);
+    const [newItemLoading, setNewItemsLoading] = useState(false);
     const [offset, setOffset] = useState(200);
-    const [charEnded, setCharEnded] = useState(false);
+    const [comicsEnded, setComicsEnded] = useState(false);
 
     useEffect(() => {
         onRequest(offset, true);
@@ -23,21 +24,21 @@ const ComicsList = () => {
 
 
     const onRequest = (offset, initial) => {
-        initial ? setNewItemLoading(false) : setNewItemLoading(true);
+        initial ? setNewItemsLoading(false) : setNewItemsLoading(true);
         getAllComics(offset)
-            .then(res => onCharListLoaded(res))
+            .then(res => onComicsListLoaded(res))
     }
 
-    const onCharListLoaded = (newCharList) => {
+    const onComicsListLoaded = (newCharList) => {
         let ended = false;
         if (newCharList.length < 8) {
             ended = true;
         }
 
         setComicsList(charList => [...charList, ...newCharList]);
-        setNewItemLoading(newItemLoading => false);
+        setNewItemsLoading(newItemLoading => false);
         setOffset(offset => offset + 8);
-        setCharEnded(charEnded => ended);
+        setComicsEnded(ComicsEnded => ended);
     }
 
     function renderItems (arr) {
@@ -47,11 +48,11 @@ const ComicsList = () => {
                     arr.map(({title, id ,price, description, thumbnail}) => {
                         return (
                             <li key={id} className="comics__item">
-                                <a href="#">
+                                <Link to={`/comics/${id}`}>
                                     <img src={thumbnail} alt="ultimate war" className="comics__item-img"/>
                                     <div className="comics__item-name">{title}</div>
                                     <div className="comics__item-price">{price}</div>
-                                </a>
+                                </Link>
                             </li>
                         )
                     })
@@ -72,7 +73,7 @@ const ComicsList = () => {
             <button onClick={onRequest} 
                     className="button button__main button__long"
                     disabled={newItemLoading}
-                    style={{'display' : charEnded ? 'none' : 'block'}}>
+                    style={{'display' : comicsEnded ? 'none' : 'block'}}>
                 <div className="inner">load more</div>
             </button>
         </div>
