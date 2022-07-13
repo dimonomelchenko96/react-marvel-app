@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types'
+import {CSSTransition,TransitionGroup} from 'react-transition-group';
 
 import Spinner from '../spinner/Spinner'
 import ErrorMessage from '../errorMessage/ErrorMessage';
@@ -14,7 +15,9 @@ const CharList = (props) =>{
     const [charList, setCharList] = useState([]);
     const [newItemLoading, setNewItemLoading] = useState(false);
     const [offset, setOffset] = useState(210);
-    const [charEnded, setCharEnded] = useState(false)
+    const [charEnded, setCharEnded] = useState(false);
+
+
 
 
     useEffect(() => {
@@ -45,23 +48,30 @@ const CharList = (props) =>{
     function renderItems (arr) {
         return (
             <ul className="char__grid">
-                {
-                    arr.map(({name, thumbnail, id}, i) => {
-                        let imgStyle = {'objectFit' : 'cover'}
-                        if (thumbnail === 'http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg') {
-                            imgStyle = {'objectFit' : 'unset'}
-                        }
+                <TransitionGroup component={null}>
+                    {
+                        arr.map(({name, thumbnail, id}, i) => {
+                            let imgStyle = {'objectFit' : 'cover'}
+                            if (thumbnail === 'http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg') {
+                                imgStyle = {'objectFit' : 'unset'}
+                            }
 
-                        return (
-                            <li tabIndex={0} key={id} 
-                            className="char__item"
-                            onClick={() => props.onCharSelected(id)}>
-                                <img style={imgStyle} src={thumbnail} alt="abyss"/>
-                                <div className="char__name">{name}</div>
-                            </li>
-                        )
-                    })
-                }
+                            return (
+                                <CSSTransition
+                                    key={id}
+                                    timeout={500}
+                                    classNames={'char__item'}>
+                                    <li tabIndex={0} key={id} 
+                                    className="char__item"
+                                    onClick={() => props.onCharSelected(id)}>
+                                        <img style={imgStyle} src={thumbnail} alt="abyss"/>
+                                        <div className="char__name">{name}</div>
+                                    </li>
+                                </CSSTransition>
+                            )
+                        })
+                    }
+                </TransitionGroup>
             </ul>
         )
     }

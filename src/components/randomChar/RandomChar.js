@@ -33,7 +33,7 @@ const RandomChar = () => {
 
     const errorMessage = error ? <ErrorMessage/> : null;
     const spinner = loading ? <Spinner/> : null;
-    const content = !(loading || error) ? <View char={char}/> : null;
+    const content = !(loading || error) ? <View char={char} loading={loading}/> : null;
 
     return (
         <div className="randomchar">
@@ -60,11 +60,9 @@ const RandomChar = () => {
 
 const View = ({char}) => {
 
-
     const sliceDescr = (str) => {
         return str ? str.slice(0, 220) + '...' : 'Sorry,but information not found';
     }
-
 
     const {name, description, thumbnail, homepage, wiki} = char;
     return (
@@ -88,7 +86,7 @@ const View = ({char}) => {
                     </a>
                 </div>
             </div>
-    </div>
+        </div>
     )
 }
 
